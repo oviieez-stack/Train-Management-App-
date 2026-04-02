@@ -1,5 +1,7 @@
 import java.util.*;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class Bogie {
     String name;
@@ -12,26 +14,67 @@ class Bogie {
 }
 
 public class TrainApp {
+
+    // 🔹 Logic method (important for testing)
+    static int calculateTotal(List<Bogie> bogies) {
+        return bogies.stream()
+                .map(b -> b.capacity)
+                .reduce(0, Integer::sum);
+    }
+
+    // 🔹 Main method
     public static void main(String[] args) {
         System.out.println("=== Train Consist Management App ===");
 
-        List<Bogie> bogies = new ArrayList<>();
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("AC Chair", 56),
+                new Bogie("First Class", 24)
+        );
 
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-        bogies.add(new Bogie("Sleeper", 70));
-        bogies.add(new Bogie("First Class", 24));
+        int total = calculateTotal(bogies);
 
-        Map<String, List<Bogie>> grouped = bogies.stream()
-                .collect(Collectors.groupingBy(b -> b.name));
+        System.out.println("Total Seating Capacity: " + total);
+    }
+}
 
-        System.out.println("Grouped Bogies:");
+// 🔹 Test Class (same file)
+class TrainAppTest {
 
-        for (Map.Entry<String, List<Bogie>> entry : grouped.entrySet()) {
-            System.out.println(entry.getKey() + ":");
-            for (Bogie b : entry.getValue()) {
-                System.out.println("  Capacity: " + b.capacity);
-            }
-        }
+    List<Bogie> getBogies() {
+        return Arrays.asList(
+                new Bogie("Sleeper", 72),
+                new Bogie("AC Chair", 56),
+                new Bogie("First Class", 24)
+        );
+    }
+
+    @Test
+    void testReduce_TotalSeatCalculation() {
+        assertEquals(152, TrainApp.calculateTotal(getBogies()));
+    }
+
+    @Test
+    void testReduce_SingleBogie() {
+        List<Bogie> list = Arrays.asList(new Bogie("Sleeper", 72));
+        assertEquals(72, TrainApp.calculateTotal(list));
+    }
+
+    @Test
+    void testReduce_EmptyList() {
+        assertEquals(0, TrainApp.calculateTotal(new ArrayList<>()));
+    }
+
+    @Test
+    void testReduce_AllBogiesIncluded() {
+        int total = TrainApp.calculateTotal(getBogies());
+        assertEquals(72 + 56 + 24, total);
+    }
+
+    @Test
+    void testReduce_OriginalListUnchanged() {
+        List<Bogie> original = getBogies();
+        TrainApp.calculateTotal(original);
+        assertEquals(3, original.size());
     }
 }
