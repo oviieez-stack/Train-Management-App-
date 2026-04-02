@@ -1,96 +1,37 @@
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TrainAppTest {
+class Bogie {
+    String name;
+    int capacity;
 
-    List<Bogie> getBogies() {
-        return Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("AC Chair", 56),
-                new Bogie("First Class", 70)
-        );
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
     }
+}
 
-    @Test
-    void testFilter_CapacityGreaterThanThreshold() {
-        List<Bogie> result = getBogies().stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
+public class TrainApp {
+    public static void main(String[] args) {
+        System.out.println("=== Train Consist Management App ===");
 
-        assertEquals(1, result.size());
-        assertEquals("Sleeper", result.get(0).name);
-    }
+        List<Bogie> bogies = new ArrayList<>();
 
-    @Test
-    void testFilter_CapacityEqualToThreshold() {
-        List<Bogie> result = getBogies().stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("Sleeper", 70));
+        bogies.add(new Bogie("First Class", 24));
 
-        assertFalse(result.stream().anyMatch(b -> b.capacity == 70));
-    }
+        Map<String, List<Bogie>> grouped = bogies.stream()
+                .collect(Collectors.groupingBy(b -> b.name));
 
-    @Test
-    void testFilter_CapacityLessThanThreshold() {
-        List<Bogie> result = getBogies().stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
+        System.out.println("Grouped Bogies:");
 
-        assertFalse(result.stream().anyMatch(b -> b.capacity < 70));
-    }
-
-    @Test
-    void testFilter_MultipleBogiesMatching() {
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 80),
-                new Bogie("AC Chair", 75),
-                new Bogie("First Class", 60)
-        );
-
-        List<Bogie> result = bogies.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(2, result.size());
-    }
-
-    @Test
-    void testFilter_NoBogiesMatching() {
-        List<Bogie> result = getBogies().stream()
-                .filter(b -> b.capacity > 100)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testFilter_AllBogiesMatching() {
-        List<Bogie> result = getBogies().stream()
-                .filter(b -> b.capacity > 10)
-                .collect(Collectors.toList());
-
-        assertEquals(3, result.size());
-    }
-
-    @Test
-    void testFilter_EmptyBogieList() {
-        List<Bogie> result = new ArrayList<Bogie>().stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void testFilter_OriginalListUnchanged() {
-        List<Bogie> original = getBogies();
-
-        List<Bogie> result = original.stream()
-                .filter(b -> b.capacity > 70)
-                .collect(Collectors.toList());
-
-        assertEquals(3, original.size());
+        for (Map.Entry<String, List<Bogie>> entry : grouped.entrySet()) {
+            System.out.println(entry.getKey() + ":");
+            for (Bogie b : entry.getValue()) {
+                System.out.println("  Capacity: " + b.capacity);
+            }
+        }
     }
 }
