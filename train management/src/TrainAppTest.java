@@ -1,80 +1,44 @@
-import java.util.*;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
-class Bogie {
-    String name;
-    int capacity;
+public class TrainValidationUC11 {
 
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
-    }
-}
-
-public class TrainApp {
-
-    // 🔹 Logic method (important for testing)
-    static int calculateTotal(List<Bogie> bogies) {
-        return bogies.stream()
-                .map(b -> b.capacity)
-                .reduce(0, Integer::sum);
-    }
-
-    // 🔹 Main method
     public static void main(String[] args) {
-        System.out.println("=== Train Consist Management App ===");
 
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("AC Chair", 56),
-                new Bogie("First Class", 24)
-        );
+        Scanner sc = new Scanner(System.in);
 
-        int total = calculateTotal(bogies);
+        System.out.print("Enter Train ID: ");
+        String trainId = sc.nextLine();
 
-        System.out.println("Total Seating Capacity: " + total);
-    }
-}
+        System.out.print("Enter Cargo Code: ");
+        String cargoCode = sc.nextLine();
 
-// 🔹 Test Class (same file)
-class TrainAppTest {
+        // Regex patterns
+        String trainPattern = "TRN-\\d{4}";
+        String cargoPattern = "PET-[A-Z]{2}";
 
-    List<Bogie> getBogies() {
-        return Arrays.asList(
-                new Bogie("Sleeper", 72),
-                new Bogie("AC Chair", 56),
-                new Bogie("First Class", 24)
-        );
-    }
+        // Compile patterns
+        Pattern p1 = Pattern.compile(trainPattern);
+        Pattern p2 = Pattern.compile(cargoPattern);
 
-    @Test
-    void testReduce_TotalSeatCalculation() {
-        assertEquals(152, TrainApp.calculateTotal(getBogies()));
-    }
+        // Match input
+        Matcher m1 = p1.matcher(trainId);
+        Matcher m2 = p2.matcher(cargoCode);
 
-    @Test
-    void testReduce_SingleBogie() {
-        List<Bogie> list = Arrays.asList(new Bogie("Sleeper", 72));
-        assertEquals(72, TrainApp.calculateTotal(list));
-    }
+        // Validation
+        if (m1.matches()) {
+            System.out.println("Valid Train ID");
+        } else {
+            System.out.println("Invalid Train ID");
+        }
 
-    @Test
-    void testReduce_EmptyList() {
-        assertEquals(0, TrainApp.calculateTotal(new ArrayList<>()));
-    }
+        if (m2.matches()) {
+            System.out.println("Valid Cargo Code");
+        } else {
+            System.out.println("Invalid Cargo Code");
+        }
 
-    @Test
-    void testReduce_AllBogiesIncluded() {
-        int total = TrainApp.calculateTotal(getBogies());
-        assertEquals(72 + 56 + 24, total);
-    }
-
-    @Test
-    void testReduce_OriginalListUnchanged() {
-        List<Bogie> original = getBogies();
-        TrainApp.calculateTotal(original);
-        assertEquals(3, original.size());
+        sc.close();
     }
 }
