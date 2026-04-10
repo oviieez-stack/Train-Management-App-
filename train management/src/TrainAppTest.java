@@ -1,53 +1,40 @@
-import java.util.*;
-import java.util.stream.Collectors;
+// Custom Exception
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
 
-class Bogie {
+// Passenger Bogie class
+class PassengerBogie {
+    String type;
     int capacity;
 
-    Bogie(int capacity) {
+    PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
+        this.type = type;
         this.capacity = capacity;
     }
 }
 
-public class PerformanceUC13 {
+// Main class
+public class UC14CapacityCheck {
 
     public static void main(String[] args) {
 
-        List<Bogie> bogies = new ArrayList<>();
+        try {
+            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);   // ✅ valid
+            System.out.println("Bogie created: " + b1.type + " - " + b1.capacity);
 
-        // Create sample data (large dataset)
-        for (int i = 0; i < 10000; i++) {
-            bogies.add(new Bogie((int)(Math.random() * 100)));
+            PassengerBogie b2 = new PassengerBogie("AC", -10);      // ❌ invalid
+            System.out.println("Bogie created: " + b2.type);
+
+        } catch (InvalidCapacityException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
 
-        // 🔥 LOOP APPROACH
-        long startLoop = System.nanoTime();
-
-        List<Bogie> loopResult = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.capacity > 60) {
-                loopResult.add(b);
-            }
-        }
-
-        long endLoop = System.nanoTime();
-        long loopTime = endLoop - startLoop;
-
-        // 🔥 STREAM APPROACH
-        long startStream = System.nanoTime();
-
-        List<Bogie> streamResult = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-
-        long endStream = System.nanoTime();
-        long streamTime = endStream - startStream;
-
-        // ✅ OUTPUT
-        System.out.println("Loop Count: " + loopResult.size());
-        System.out.println("Stream Count: " + streamResult.size());
-
-        System.out.println("Loop Time (ns): " + loopTime);
-        System.out.println("Stream Time (ns): " + streamTime);
+        System.out.println("Program continues safely...");
     }
 }
