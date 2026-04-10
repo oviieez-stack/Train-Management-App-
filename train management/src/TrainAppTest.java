@@ -1,44 +1,43 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
-public class UC19BinarySearch {
+public class UC20SearchValidation {
+
+    public static boolean searchBogie(String[] bogieIds, String key) {
+
+        // 🔥 Fail-fast check
+        if (bogieIds.length == 0) {
+            throw new IllegalStateException("No bogies available to search!");
+        }
+
+        // Linear Search (you can also use binary)
+        for (String id : bogieIds) {
+            if (id.equals(key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static void main(String[] args) {
 
-        String[] bogieIds = {"BG309","BG101","BG550","BG205","BG412"};
-
-        // 🔥 Step 1: Sort array (important)
-        Arrays.sort(bogieIds);
+        String[] bogieIds = {"BG101", "BG205", "BG309"};
 
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter Bogie ID to search: ");
         String key = sc.nextLine();
 
-        int low = 0;
-        int high = bogieIds.length - 1;
-        boolean found = false;
+        try {
+            boolean found = searchBogie(bogieIds, key);
 
-        // 🔥 Binary Search
-        while (low <= high) {
-            int mid = (low + high) / 2;
-
-            int result = key.compareTo(bogieIds[mid]);
-
-            if (result == 0) {
-                found = true;
-                break;
-            } else if (result > 0) {
-                low = mid + 1;
+            if (found) {
+                System.out.println("Bogie Found!");
             } else {
-                high = mid - 1;
+                System.out.println("Bogie Not Found!");
             }
-        }
 
-        // Result
-        if (found) {
-            System.out.println("Bogie Found!");
-        } else {
-            System.out.println("Bogie Not Found!");
+        } catch (IllegalStateException e) {
+            System.out.println("ERROR: " + e.getMessage());
         }
 
         sc.close();
