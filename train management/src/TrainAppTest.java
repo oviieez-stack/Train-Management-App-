@@ -1,26 +1,18 @@
-public class UC16BubbleSort {
+import java.util.Arrays;
+
+public class UC17SortNames {
 
     public static void main(String[] args) {
 
-        int[] capacities = {72, 56, 24, 70, 60};
+        String[] bogieNames = {
+                "Sleeper", "AC Chair", "First Class", "General", "Luxury"
+        };
 
-        // Bubble Sort
-        for (int i = 0; i < capacities.length - 1; i++) {
-            for (int j = 0; j < capacities.length - i - 1; j++) {
+        // Sort using built-in method
+        Arrays.sort(bogieNames);
 
-                if (capacities[j] > capacities[j + 1]) {
-                    // swap
-                    int temp = capacities[j];
-                    capacities[j] = capacities[j + 1];
-                    capacities[j + 1] = temp;
-                }
-            }
-        }
-
-        // Display sorted array
-        System.out.println("Sorted Capacities:");
-        for (int c : capacities) {
-            System.out.print(c + " ");
-        }
+        // Display result
+        System.out.println("Sorted Bogie Names:");
+        System.out.println(Arrays.toString(bogieNames));
     }
 }
