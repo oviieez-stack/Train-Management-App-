@@ -1,44 +1,34 @@
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.*;
 
-public class TrainValidationUC11 {
+class Bogie {
+    String type;
+    String cargo;
+
+    Bogie(String type, String cargo) {
+        this.type = type;
+        this.cargo = cargo;
+    }
+}
+
+public class SafetyCheckUC12 {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
+        List<Bogie> bogies = Arrays.asList(
+                new Bogie("Cylindrical", "Petroleum"),
+                new Bogie("Open", "Coal"),
+                new Bogie("Box", "Grain")
+        );
 
-        System.out.print("Enter Train ID: ");
-        String trainId = sc.nextLine();
+        // Safety rule check using stream
+        boolean isSafe = bogies.stream().allMatch(b ->
+                !b.type.equals("Cylindrical") || b.cargo.equals("Petroleum")
+        );
 
-        System.out.print("Enter Cargo Code: ");
-        String cargoCode = sc.nextLine();
-
-        // Regex patterns
-        String trainPattern = "TRN-\\d{4}";
-        String cargoPattern = "PET-[A-Z]{2}";
-
-        // Compile patterns
-        Pattern p1 = Pattern.compile(trainPattern);
-        Pattern p2 = Pattern.compile(cargoPattern);
-
-        // Match input
-        Matcher m1 = p1.matcher(trainId);
-        Matcher m2 = p2.matcher(cargoCode);
-
-        // Validation
-        if (m1.matches()) {
-            System.out.println("Valid Train ID");
+        if (isSafe) {
+            System.out.println("Train is SAFE");
         } else {
-            System.out.println("Invalid Train ID");
+            System.out.println("Train is UNSAFE");
         }
-
-        if (m2.matches()) {
-            System.out.println("Valid Cargo Code");
-        } else {
-            System.out.println("Invalid Cargo Code");
-        }
-
-        sc.close();
     }
 }
